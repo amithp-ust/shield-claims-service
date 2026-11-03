@@ -1,0 +1,62 @@
+openapi: 3.1.0
+info:
+  title: Shield Claims Service
+  version: 0.1.0
+  description: Synthetic callable fixture; no HTTP adapter is deployed.
+paths:
+  /claims:
+    post:
+      operationId: adjudicate
+      description: Check policy coverage, obtain a fraud score, and request a payout.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [claim_id, policy_id, requested_cents]
+              properties:
+                claim_id: {type: string, minLength: 1}
+                policy_id: {type: string, minLength: 1}
+                requested_cents: {type: integer, minimum: 1}
+      responses:
+        "200":
+          description: Adjudicated claim or idempotent retry result.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Claim"}
+        "400":
+          description: Invalid claim input.
+        "404":
+          description: Policy or policy risk record not found.
+        "409":
+          description: Inactive policy, conflicting claim retry, or payout conflict.
+  /claims/{claim_id}:
+    get:
+      operationId: get_claim
+      parameters:
+        - name: claim_id
+          in: path
+          required: true
+          schema: {type: string, minLength: 1}
+      responses:
+        "200":
+          description: Current authoritative claim status and payment amounts.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Claim"}
+        "404":
+          description: Claim not found.
+components:
+  schemas:
+    Claim:
+      type: object
+      required: [claim_id, policy_id, requested_cents, paid_cents, status]
+      properties:
+        claim_id: {type: string, minLength: 1}
+        policy_id: {type: string, minLength: 1}
+        requested_cents: {type: integer, minimum: 1}
+        paid_cents: {type: integer, minimum: 0}
+        status:
+          type: string
+          enum: [manual_review, denied, partially_paid, paid]
