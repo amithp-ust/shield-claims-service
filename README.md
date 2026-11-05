@@ -18,11 +18,17 @@ The response exposes status and amounts, but no payment-reason explanation.
 Claims and idempotent results are held in memory for the service instance.
 `contracts/claims-api.yaml` describes the intended API.
 
-Shared context: `amithp-ust/shield-context` (`AGENTS.md`, glossary, scope,
-standards, component map). `specs/` is empty. For the future
-`001-claim-payment-reason` intent, this repository would host the full spec,
-interview, plan, and tasks; the portal would receive only its requirements with
-a link back to the primary spec. No such spec has been published yet.
+## Specification consumer
 
-Python 3.12+, standard library only. Run `python -m unittest discover -s tests`.
+Canonical specs, authoring, gates, and requirement metrics live only in
+[`amithp-ust/Intent-to-spec`](https://github.com/amithp-ust/Intent-to-spec).
+Shared glossary, map, standards, and policy remain in
+[`amithp-ust/shield-context`](https://github.com/amithp-ust/shield-context).
+This repo owns `CM-CLAIMS` implementation, not spec authoring. See
+[AGENTS.md](AGENTS.md) for immutable approved spec references, issue/PR traceability,
+human review, and fixture-contract checks. Do not install authoring here or copy
+specs; empty `specs/.gitkeep` is a legacy placeholder.
+
+Python 3.11+, standard library only. Run `python -m unittest discover -s tests`
+from this repository root; the unit-test CI runs the same command on Python 3.11.
 These callable stubs are not production claims processing or HTTP servers.
